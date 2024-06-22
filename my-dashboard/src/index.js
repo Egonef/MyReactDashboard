@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+//Fonts
 import '@fontsource/alegreya-sans';
-// Supports weights 300-700
 import '@fontsource-variable/quicksand';
+import '@fontsource/audiowide';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
