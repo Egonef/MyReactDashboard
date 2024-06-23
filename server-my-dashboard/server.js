@@ -19,6 +19,17 @@ app.get('/games', (req, res) => {
         });
 });
 
+app.get('/achievements/:gameId', (req, res) => {
+    const gameId = req.params.gameId;
+    axios.get(`http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${gameId}&key=6D0610741FAFD642B94529145535074A&steamid=76561198240856924`)
+        .then(response => {
+            res.json(response.data.playerstats.achievements);
+        })
+        .catch(error => {
+            res.status(500).json({ error: error.toString() });
+        });
+});
+
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
 });

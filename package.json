@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "start:client": "cd my-dashboard && npm start",
+    "start:server": "cd server-my-dashboard && node server.js",
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\""
+  }
+}

@@ -1,12 +1,13 @@
 //Library imports
-import axios from 'axios';
-import { useEffect , useState } from 'react';
+
 // File imports
 import './animations.css';
+import './progressbar.css';
 // Components imports
 import SideBar from './Components/LateralBar';
 import WeatherBox from './Components/WeatherBox';
 import SteamInfo from './Components/SteamInfo';
+import SystemInfo from './Components/SystemInfo';
 
 // Color palette
 // Morado oscuro: #B699C5
@@ -22,8 +23,16 @@ function App() {
     return (
         <div className=" h-svh bg-[#B699C5] flex flex-row ">
             <SideBar />
-            <WeatherBox />
-            <SteamInfo />
+            <div className=' flex flex-col'>
+                <div className=' flex flex-row'>
+                    <WeatherBox />
+                    <SteamInfo />
+                </div>
+                <div className=' flex flex-row'>
+                    <SystemInfo />
+                </div>
+            </div>
+
         </div>
     );
 }
