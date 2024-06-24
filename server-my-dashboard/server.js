@@ -1,7 +1,12 @@
 const express = require('express');
+const app = express();
+
+const osUtils = require('os-utils');
+const si = require('systeminformation');
+
 const cors = require('cors');
 const axios = require('axios');
-const app = express();
+
 
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -29,6 +34,24 @@ app.get('/achievements/:gameId', (req, res) => {
             res.status(500).json({ error: error.toString() });
         });
 });
+
+
+app.get('/system-info', (req, res) => {
+    si.cpuTemperature().then(temp => {
+        osUtils.cpuUsage((cpuPercentage) => {
+            res.json({
+                cpuUsage: cpuPercentage,
+                cpuTemperature: temp, // Aquí se usa la información de temperatura obtenida
+                freeMemory: osUtils.freememPercentage(),
+                totalMemory: osUtils.totalmem(),
+                systemUptime: osUtils.sysUptime()
+            });
+        });
+    }).catch(error => {
+        res.status(500).json({ error: error.toString() });
+    });
+});
+
 
 app.listen(3001, () => {
     console.log('Server is running on port 3001');

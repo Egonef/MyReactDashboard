@@ -11,51 +11,46 @@ export default function SteamInfo( ) {
     const [achievements, setAchievements] = useState([]);
     const [achievementNumber, setAchievementNumber] = useState(0);
 
-    //Encontrar cual es el juego con mas horas jugadas
     useEffect(() => {
-        if (games.length > 0) {
-            let mostPlayedGame = games[0];
-            for (let i = 1; i < games.length; i++) {
-                if (games[i].playtime_forever > mostPlayedGame.playtime_forever) {
-                    mostPlayedGame = games[i];
-                }
-            }
-            setMostPlayedGame(mostPlayedGame);
-        }
-
-        if (mostPlayedGame != null){
-            axios.get('http://localhost:3001/achievements/' + mostPlayedGame.appid)
-            .then(response => {
-                setAchievements(response.data);
-                console.log(response.data);
-
-            })
-            .catch(error => {
-                console.error('There was an error!', error);
-            });
-        }
-
-        // DONDE COJONE PONGO ESTE CACHO QUIE NO COGE BIEN LOS LOGROS POR EL ORDEN DE DSACAART LAS VARIABLES ERE UN AINFLA BOLA 
-        var achievementCounter = 0;
-        for (let i = 0; i < achievements.length; i++) {
-            if (achievements[i].achieved === 1) {
-                achievementCounter++;
-            }
-            setAchievementNumber(achievementCounter);
-        }
-    } , [games, mostPlayedGame, achievements]);
-
-    //Obtener los juegos de la API de Steam y los logros de cada uno
-    useEffect(() => {
+        // Este useEffect se encarga de obtener los juegos
         axios.get('http://localhost:3001/games')
             .then(response => {
                 setGames(response.data.response.games);
             })
             .catch(error => {
-                console.error('There was an error!', error);
+                console.error('There was an error fetching games!', error);
             });
+    }, []); // Este arreglo vacío asegura que esto solo se ejecute una vez al montar el componente
 
-    } , []);
+    useEffect(() => {
+        // Este useEffect se encarga de encontrar el juego más jugado
+        let tempMostPlayed = games[0] || null;
+        for (let i = 1; i < games.length; i++) {
+            if (games[i].playtime_forever > (tempMostPlayed?.playtime_forever || 0)) {
+                tempMostPlayed = games[i];
+            }
+        }
+        setMostPlayedGame(tempMostPlayed);
+    }, [games]); // Se ejecuta cada vez que la lista de juegos cambia
+
+    useEffect(() => {
+        // Este useEffect se encarga de obtener los logros del juego más jugado
+        if (mostPlayedGame) {
+            axios.get(`http://localhost:3001/achievements/${mostPlayedGame.appid}`)
+                .then(response => {
+                    setAchievements(response.data);
+                })
+                .catch(error => {
+                    console.error('There was an error fetching achievements!', error);
+                });
+        }
+    }, [mostPlayedGame]); // Se ejecuta cada vez que mostPlayedGame cambia
+
+    useEffect(() => {
+        // Este useEffect se encarga de contar los logros obtenidos
+        let achievementCounter = achievements.filter(ach => ach.achieved === 1).length;
+        setAchievementNumber(achievementCounter);
+    }, [achievements]); // Se ejecuta cada vez que la lista de logros cambia
 
 
     return (
