@@ -9,3 +9,29 @@ progress[value]::-webkit-progress-bar {
   progress[value]::-moz-progress-bar {
     background-color: #b6d177;
   }
+
+
+  .progress-circle {
+    position: relative;
+    border-radius: 50%;
+    background: conic-gradient(#4d5bf9 0%, #4d5bf9 75%, #cadcff 75%);
+  }
+  .progress-circle::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    background: #B699C5;
+    border-radius: 50%;
+  }
+  .progress-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }

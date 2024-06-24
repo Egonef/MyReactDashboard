@@ -23,18 +23,17 @@ export default function WeatherBox( ) {
     const [rotationAngle, setRotationAngle] = useState(getRotationAngle());
 
     useEffect(() => {
-        /*
+        
         axios.get(`http://api.openweathermap.org/data/2.5/weather?lat=37.53&lon=-4.45&units=metric&lang=es&appid=da2eddf13f520f53e860512334af9c9d`)
             .then(response => {
                 console.log("Response: ");
-                setTemperature(response.data.main.temp + 5)
+                setTemperature(response.data.main.temp + 4)
             })
             .catch(error => {
                 console.log(error);
             });
-        */
+        
         setTemperature("25");
-
         const interval = setInterval(() => {
             setRotationAngle(getRotationAngle());
         }, 60000);

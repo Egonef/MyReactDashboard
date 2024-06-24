@@ -3,6 +3,7 @@ const app = express();
 
 const osUtils = require('os-utils');
 const si = require('systeminformation');
+const nodeDiskInfo = require('node-disk-info');
 
 const cors = require('cors');
 const axios = require('axios');
@@ -36,22 +37,37 @@ app.get('/achievements/:gameId', (req, res) => {
 });
 
 
+
+
 app.get('/system-info', (req, res) => {
     si.cpuTemperature().then(temp => {
         osUtils.cpuUsage((cpuPercentage) => {
-            res.json({
-                cpuUsage: cpuPercentage,
-                cpuTemperature: temp, // Aquí se usa la información de temperatura obtenida
-                freeMemory: osUtils.freememPercentage(),
-                totalMemory: osUtils.totalmem(),
-                systemUptime: osUtils.sysUptime()
+            nodeDiskInfo.getDiskInfo().then(disks => {
+                // Filtrar para obtener solo el disco principal
+                // En Linux, el disco principal suele montarse en '/'
+                // En Windows, suele ser 'C:'
+                const mainDisk = disks.find(disk => disk.mounted === '/' || disk.mounted === 'C:');
+                if (!mainDisk) {
+                    return res.status(404).json({ error: 'Main disk not found' });
+                }
+                const freeDiskSpace = mainDisk.available; // Espacio disponible en el disco principal
+                res.json({
+                    cpuUsage: cpuPercentage,
+                    cpuTemperature: temp,
+                    freeMemory: osUtils.freememPercentage(),
+                    totalMemory: osUtils.totalmem(),
+                    systemUptime: osUtils.sysUptime(),
+                    freeSSD: osUtils.freemem(),
+                    freeDiskSpace: freeDiskSpace // Espacio libre en el disco principal
+                });
+            }).catch(error => {
+                res.status(500).json({ error: error.toString() });
             });
         });
     }).catch(error => {
         res.status(500).json({ error: error.toString() });
     });
 });
-
 
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
