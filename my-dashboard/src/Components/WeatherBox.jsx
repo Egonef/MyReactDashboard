@@ -1,46 +1,41 @@
-//  Library imports
+// Importamos axios para hacer solicitudes HTTP y los hooks de React para manejar efectos y estado
 import axios from 'axios';
-import { useEffect , useState } from 'react';
-// File imports
+import { useEffect, useState } from 'react';
 
-//Function to obtain the rotation angle of the clock
-
+// Función para obtener el ángulo de rotación del reloj basado en la hora actual
 function getRotationAngle() {
-    const date = new Date();
-    const currentHour = date.getHours();
-    const currentMinutes = date.getMinutes();
-    const totalMinutes = currentHour * 60 + currentMinutes;
-    const rotationAngle = (totalMinutes / (24 * 60)) * 360;
+    const date = new Date(); // Obtenemos la fecha y hora actuales
+    const currentHour = date.getHours(); // Obtenemos la hora actual
+    const currentMinutes = date.getMinutes(); // Obtenemos los minutos actuales
+    const totalMinutes = currentHour * 60 + currentMinutes; // Calculamos el total de minutos desde las 00:00
+    const rotationAngle = (totalMinutes / (24 * 60)) * 360; // Calculamos el ángulo de rotación en grados
     return rotationAngle;
 }
 
-
-
-export default function WeatherBox( ) {
-
-    const [temperature, setTemperature] = useState(null);
-
-    const [rotationAngle, setRotationAngle] = useState(getRotationAngle());
+// Componente WeatherBox que muestra la temperatura y un reloj animado
+export default function WeatherBox() {
+    const [temperature, setTemperature] = useState(null); // Estado para almacenar la temperatura
+    const [rotationAngle, setRotationAngle] = useState(getRotationAngle()); // Estado para almacenar el ángulo de rotación del reloj
 
     useEffect(() => {
-        
-        axios.get(`http://api.openweathermap.org/data/2.5/weather?lat=37.53&lon=-4.45&units=metric&lang=es&appid=da2eddf13f520f53e860512334af9c9d`)
+        // Hacemos una solicitud GET a la API de OpenWeatherMap para obtener la temperatura actual
+        axios.get('http://api.openweathermap.org/data/2.5/weather?lat=37.53&lon=-4.45&units=metric&lang=es&appid=da2eddf13f520f53e860512334af9c9d')
             .then(response => {
-                console.log("Response: ");
-                setTemperature(response.data.main.temp + 4)
+                console.log("Response: "); // Mensaje de depuración para mostrar la respuesta de la API
+                setTemperature(response.data.main.temp + 4); // Actualizamos el estado con la temperatura actualizada
             })
             .catch(error => {
-                console.log(error);
+                console.log(error); // Manejo de errores en caso de que la solicitud falle
             });
         
-        setTemperature("25");
-        const interval = setInterval(() => {
-            setRotationAngle(getRotationAngle());
-        }, 60000);
+        setTemperature("25"); // Valor temporal para simular la temperatura (se actualizará más tarde con el valor real)
 
-        return () => clearInterval(interval);
-        //late-y-36 rounded-[20rem] drop-shadow-[-10.2px_-10.2px_20.2px_#CCDF9F]'></div>
-    } , []);
+        const interval = setInterval(() => {
+            setRotationAngle(getRotationAngle()); // Actualizamos el ángulo de rotación del reloj cada minuto
+        }, 60000); // Intervalo de tiempo en milisegundos (1 minuto)
+
+        return () => clearInterval(interval); // Limpia el intervalo cuando el componente se desmonta
+    }, []);
 
 
     return (

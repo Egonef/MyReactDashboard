@@ -8,7 +8,7 @@ import SideBar from './Components/LateralBar';
 import WeatherBox from './Components/WeatherBox';
 import SteamInfo from './Components/SteamInfo';
 import SystemInfo from './Components/SystemInfo';
-
+import ToDoListWidget from './Components/TaskList';
 // Color palette
 // Morado oscuro: #B699C5
 // Morado claro: #DACEE4
@@ -30,6 +30,7 @@ function App() {
                 </div>
                 <div className=' flex flex-row'>
                     <SystemInfo />
+                    <ToDoListWidget />
                 </div>
             </div>
 
